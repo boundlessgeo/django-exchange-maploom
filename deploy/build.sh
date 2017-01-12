@@ -91,6 +91,9 @@ echo '{% endverbatim %}' >> _maploom_map.html
 rm index_body.html
 rm index_body_no_tag.html
 
+# copy over the new maploom.html
+cp $MAPLOOM_PATH/bin/maploom.html maploom/templates/maps/maploom.html
+
 # remove data we will overwrite shortly
 rm -r maploom/static/maploom/assets
 rm -r maploom/static/maploom/fonts
