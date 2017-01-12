@@ -18,7 +18,7 @@
           <!--<span ng-class="{'hidden': !notificationsPanel}" class="loom-notification-badge pull-right"></span>-->
         </div>
       </div>
-      <div class="loom-search"></div>
+      <div ng-show="nominatimSearchEnabled" class="loom-search"></div>
       <div id="pulldown-menu" class="panel-group in">
         <div id="pulldown-content">
           <div class="panel" ng-show="notificationsPanel" ng-controller="LoomNotificationController">
@@ -41,19 +41,51 @@
               </div>
             </div>
           </div>
+
+
+            <div ng-show="true" class="panel">
+                <div class="panel-heading" data-toggle="collapse" data-parent="#pulldown-content" data-target="#measure-panel-content">
+                    <span translate="measure">Measure</span>
+                </div>
+                <div id="measure-panel-content" class="panel-collapse collapse pulldown-panel">
+                    <div loom-measurepanel></div>
+                </div>
+            </div>
+
           <div class="panel" ng-show="layersPanel">
-            <div class="panel-heading" data-toggle="collapse" data-parent="#pulldown-content"
+            <div ng-show="registryEnabled && !unifiedLayerDialog" class="panel-heading" data-parent="#pulldown-content">
+              <span translate="registry">Registry</span>
+              <div ng-show="addLayers" stop-event='click' ng-controller="modalToggle" ng-click="toggleModal('#registry-layer-dialog')"
+                   tooltip-placement="top" tooltip="{{'registry_layer_btn' | translate}}" tooltip-append-to-body="true"
+                   class="glyphicon glyphicon-plus-sign panel-header-button pull-right"></div>
+              <div id="server-loading" class="loom-loading pull-right" spinner-radius="20" spinner-width="3" spinner-hidden="!serversLoading"></div>
+            </div>
+
+            <div ng-show="!unifiedLayerDialog" class="panel-heading" data-toggle="collapse" data-parent="#pulldown-content"
                  data-target="#layer-manager-panel">
               <span translate="map_layers">Map Layers</span>
               <div ng-show="addLayers" stop-event='click' ng-controller="modalToggle" ng-click="toggleModal('#add-layer-dialog')"
                    tooltip-placement="top" tooltip="{{'add_layer_btn' | translate}}" tooltip-append-to-body="true"
                    class="glyphicon glyphicon-plus-sign panel-header-button pull-right"></div>
+
               <div id="server-loading" class="loom-loading pull-right" spinner-radius="20" spinner-width="3" spinner-hidden="!serversLoading"></div>
             </div>
+
+            <div ng-show="unifiedLayerDialog" class="panel-heading" data-toggle="collapse" data-parent="#pulldown-content"
+                 data-target="#layer-manager-panel">
+              <span translate="map_layers">Map Layers</span>
+              <div ng-show="addLayers" stop-event='click' ng-controller="modalToggle" ng-click="toggleModal('#unified-layer-dialog')"
+                   tooltip-placement="top" tooltip="{{'add_layer_btn' | translate}}" tooltip-append-to-body="true"
+                   class="glyphicon glyphicon-plus-sign panel-header-button pull-right"></div>
+
+              <div id="server-loading" class="loom-loading pull-right" spinner-radius="20" spinner-width="3" spinner-hidden="!serversLoading"></div>
+            </div>
+
             <div id="layer-manager-panel" class="panel-collapse collapse pulldown-panel">
               <div class="loom-layers"></div>
             </div>
           </div>
+
           <div class="panel" ng-show="syncPanel">
             <div class="panel-heading" data-toggle="collapse" data-parent="#pulldown-content"
                  data-target="#syncronization-panel">
@@ -78,8 +110,8 @@
                    tooltip-placement="top" tooltip="{{'history_summary' | translate}}" tooltip-append-to-body="true"
                    class="glyphicon glyphicon-list-alt pull-right panel-header-button"></div>
             </div>
-            <div id="history-panel" class="loom-history-panel panel-collapse collapse pulldown-panel">History goes
-              here.
+            <div id="history-panel" class="panel-collapse collapse pulldown-panel">
+                <div loom-history-panel></div>
             </div>
           </div>
           <div class="panel" ng-show="diffPanel" ng-controller="LoomDiffController">
@@ -124,9 +156,14 @@
   <div class="loom-timeline"></div>
 </div>
 <!--modal titles are in a lower case underscore separated format so that they can be translated-->
+<div loom-modal id="unified-layer-dialog" modal-title="add_layers">
+  <div loom-unifiedlayers></div>
+</div>
+<div loom-modal id="registry-layer-dialog" modal-title="search_layers">
+  <div loom-registrylayers id="registry-layers"></div>
+</div>
 <div loom-modal id="add-layer-dialog" modal-title="add_layers">
-  <div loom-addlayers id="add-layers">
-  </div>
+  <div loom-addlayers></div>
 </div>
 <div loom-modal id="add-server-dialog" modal-title="add_server">
   <div loom-add-server id="add-server">
@@ -180,12 +217,20 @@
   <div loom-layer-info id="layer-info">
   </div>
 </div>
+<div loom-modal id="layerInfoDialog" modal-title="layerattributevisibility">
+  <div loom-layer-attribute-visibility id="layer-attribute-visibility">
+  </div>
+</div>
 <div loom-feature-info-box id="info-box" ng-show="featureManagerService.getSelectedItem() && featureManagerService.getEnabled()"
      class="feature-info-box-popup">
 </div>
 <div loom-modal id="saveMap" modal-title="{{ 'save_this_map' | translate}}">
     <div loom-save-map id="save-map">
     </div>
+</div>
+<div loom-modal id="enter-spatial-filter-radius-dialog" modal-title="{{'enter_radius' | translate}}">
+  <div loom-enterspatialfilterradius class="loom-enter-spatial-filter-radius">
+  </div>
 </div>
 
 <!-- The Bootstrap Image Gallery lightbox, should be a child element of the document body -->
