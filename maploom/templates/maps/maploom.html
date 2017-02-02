@@ -9,53 +9,27 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-COMPATIBLE" content="IE-Edge">
-  <script type="text/javascript">
-    window.MAPLOOM_VERSION = {
-        "version_string": "1.5.38",
-        "build_date": "2017-02-01"
-    };
-  </script>
 
 <!-- compiled CSS -->
     
-        <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}maploom/assets/MapLoom-1.5.38.css"/>
+        <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}maploom/assets/MapLoom-1.5.11.css"/>
     
 
 
 
 <!-- compiled JavaScript -->
     
-        <script type="text/javascript" src="{{STATIC_URL}}maploom/assets/MapLoom-1.5.38.js"></script>
+        <script type="text/javascript" src="{{STATIC_URL}}maploom/assets/MapLoom-1.5.11.js"></script>
     
 
 
 
     {% get_current_language as language%}
 <script type="text/javascript">
-    var catalogList = [];
-    try {
-        catalogList = JSON.parse("{{ CATALOGLIST|safe }}".replace(/'/g, '"'));
-    } catch(err) {
-        console.warn('No catalogs in CATALOGLIST');
-    }
+    var catalogList = JSON.parse("{{ CATALOGLIST|safe }}".replace(/'/g, '"'));
     var registryEnabled = function(){
       return "{{ REGISTRY }}".toLowerCase() === "true" || true ? true : false;
     };
-    var unifiedDialogEnabled = function(){
-        return "{{ UNIFIED_LAYER_DIALOG }}".toLowerCase() === "true" || true ? true: false;
-    };
-    var nominatimSearchEnabled = function(){
-      return "{{ NOMINATIM_SEARCH }}".toLowerCase() === "true" || true ? true : false;
-    };
-    var trimUrl = function(url){
-        // remove any trailing "/"s from the URLs
-        if (url[url.length - 1] == '/') {
-            url = url.substring(0, url.length - 1);
-        }
-        // strip any schema off of the URL
-        return url.substring(url.indexOf('//'));
-    };
-
     config =  {
         authStatus: {% if user.is_authenticated %} 200{% else %} 401{% endif %},
         username: {% if user.is_authenticated %} "{{ user.username }}" {% else %} undefined {% endif %},
@@ -63,8 +37,8 @@
         userprofilename: {% if user.is_authenticated %} "{{ user.get_full_name }}" {% else %} undefined {% endif %},
         userprofileemail: {% if user.is_authenticated %} "{{ user.email }}" {% else %} undefined {% endif %},
         proxy: "/proxy/?url=",
-        nominatimUrl: "//nominatim.openstreetmap.org",
-        printService: trimUrl("{{GEOSERVER_BASE_URL}}pdf")+'/',
+        nominatimUrl: "http://nominatim.openstreetmap.org",
+        printService: "{{GEOSERVER_BASE_URL}}pdf/",
         /* The URL to a REST map configuration service.  This service
          * provides listing and, with an authenticated user, saving of
          * maps on the server for sharing and editing.
@@ -82,39 +56,16 @@
         {% endif %}
         region: "north"
         }],
-        localGeoServerBaseUrl: trimUrl("{{ GEOSERVER_BASE_URL }}"),
-        localCSWBaseUrl: trimUrl("{{ CATALOGUE_BASE_URL }}"),
+        localGeoServerBaseUrl: "{{ GEOSERVER_BASE_URL }}",
+        localCSWBaseUrl: "{{ CATALOGUE_BASE_URL }}",
+        registryEnabled: "{{ REGISTRY }}",
         catalogList: "{{ CATALOGLIST }}",
-        nominatimSearchEnabled: "{{ NOMINATIM_SEARCH }}",
         csrfToken: "{{ csrf_token }}",
         tools: [{ptype: "gxp_getfeedfeatureinfo"}],
         registryEnabled: registryEnabled(),
-        registryUrl: trimUrl("{{ REGISTRYURL }}"),
-        nominatimSearchEnabled: nominatimSearchEnabled(),
-        unifiedLayerDialog: unifiedDialogEnabled()
+        catalogList: catalogList
     };
     goog.object.extend( config, {{ config|safe }});
-    // clean up any of the sources URLs
-    for (var src_key in config.sources) {
-        if (goog.isDefAndNotNull(config.sources[src_key].url)) {
-            config.sources[src_key].url = trimUrl(config.sources[src_key].url);
-        }
-    }
-
-    // scrub any layers that are of type gxp_olsource,
-    //  as they are not supported by maploom.
-    // They enter config as "OpenLayers.Layer" type
-    function scrubMapLayers() {
-        var map_layers = [];
-        for (var i = 0, ii = config.map.layers.length; i < ii; i++) {
-            var layer = config.map.layers[i];
-            if (layer.type != 'OpenLayers.Layer') {
-                map_layers.push(layer);
-            }
-        }
-        return map_layers;
-    }
-    config.map.layers = scrubMapLayers();
 </script>
 
 
@@ -147,7 +98,7 @@
           <!--<span ng-class="{'hidden': !notificationsPanel}" class="loom-notification-badge pull-right"></span>-->
         </div>
       </div>
-      <div ng-show="nominatimSearchEnabled" class="loom-search"></div>
+      <div class="loom-search"></div>
       <div id="pulldown-menu" class="panel-group in">
         <div id="pulldown-content">
           <div class="panel" ng-show="notificationsPanel" ng-controller="LoomNotificationController">
@@ -171,18 +122,8 @@
             </div>
           </div>
 
-
-            <div ng-show="true" class="panel">
-                <div class="panel-heading" data-toggle="collapse" data-parent="#pulldown-content" data-target="#measure-panel-content">
-                    <span translate="measure">Measure</span>
-                </div>
-                <div id="measure-panel-content" class="panel-collapse collapse pulldown-panel">
-                    <div loom-measurepanel></div>
-                </div>
-            </div>
-
           <div class="panel" ng-show="layersPanel">
-            <div ng-show="registryEnabled && !unifiedLayerDialog" class="panel-heading" data-parent="#pulldown-content">
+            <div ng-show="registryEnabled" class="panel-heading" data-parent="#pulldown-content">
               <span translate="registry">Registry</span>
               <div ng-show="addLayers" stop-event='click' ng-controller="modalToggle" ng-click="toggleModal('#registry-layer-dialog')"
                    tooltip-placement="top" tooltip="{{'registry_layer_btn' | translate}}" tooltip-append-to-body="true"
@@ -190,26 +131,14 @@
               <div id="server-loading" class="loom-loading pull-right" spinner-radius="20" spinner-width="3" spinner-hidden="!serversLoading"></div>
             </div>
 
-            <div ng-show="!unifiedLayerDialog" class="panel-heading" data-toggle="collapse" data-parent="#pulldown-content"
+            <div class="panel-heading" data-toggle="collapse" data-parent="#pulldown-content"
                  data-target="#layer-manager-panel">
               <span translate="map_layers">Map Layers</span>
               <div ng-show="addLayers" stop-event='click' ng-controller="modalToggle" ng-click="toggleModal('#add-layer-dialog')"
                    tooltip-placement="top" tooltip="{{'add_layer_btn' | translate}}" tooltip-append-to-body="true"
                    class="glyphicon glyphicon-plus-sign panel-header-button pull-right"></div>
-
               <div id="server-loading" class="loom-loading pull-right" spinner-radius="20" spinner-width="3" spinner-hidden="!serversLoading"></div>
             </div>
-
-            <div ng-show="unifiedLayerDialog" class="panel-heading" data-toggle="collapse" data-parent="#pulldown-content"
-                 data-target="#layer-manager-panel">
-              <span translate="map_layers">Map Layers</span>
-              <div ng-show="addLayers" stop-event='click' ng-controller="modalToggle" ng-click="toggleModal('#unified-layer-dialog')"
-                   tooltip-placement="top" tooltip="{{'add_layer_btn' | translate}}" tooltip-append-to-body="true"
-                   class="glyphicon glyphicon-plus-sign panel-header-button pull-right"></div>
-
-              <div id="server-loading" class="loom-loading pull-right" spinner-radius="20" spinner-width="3" spinner-hidden="!serversLoading"></div>
-            </div>
-
             <div id="layer-manager-panel" class="panel-collapse collapse pulldown-panel">
               <div class="loom-layers"></div>
             </div>
@@ -239,8 +168,8 @@
                    tooltip-placement="top" tooltip="{{'history_summary' | translate}}" tooltip-append-to-body="true"
                    class="glyphicon glyphicon-list-alt pull-right panel-header-button"></div>
             </div>
-            <div id="history-panel" class="panel-collapse collapse pulldown-panel">
-                <div loom-history-panel></div>
+            <div id="history-panel" class="loom-history-panel panel-collapse collapse pulldown-panel">History goes
+              here.
             </div>
           </div>
           <div class="panel" ng-show="diffPanel" ng-controller="LoomDiffController">
@@ -285,10 +214,7 @@
   <div class="loom-timeline"></div>
 </div>
 <!--modal titles are in a lower case underscore separated format so that they can be translated-->
-<div loom-modal id="unified-layer-dialog" modal-title="add_layers">
-  <div loom-unifiedlayers></div>
-</div>
-<div loom-modal id="registry-layer-dialog" modal-title="search_layers">
+<div loom-modal id="registry-layer-dialog" modal-title="registry_layers">
   <div loom-registrylayers id="registry-layers"></div>
 </div>
 <div loom-modal id="add-layer-dialog" modal-title="add_layers">
