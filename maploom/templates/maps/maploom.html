@@ -26,7 +26,7 @@
 
     {% get_current_language as language%}
 <script type="text/javascript">
-    var catalogList = JSON.parse("{{ CATALOGLIST|safe }}".replace(/'/g, '"'));
+    var catalogList = ['http://admin:geoserver@172.16.238.2/geoserver/wms'];
     var registryEnabled = function(){
       return "{{ REGISTRY }}".toLowerCase() === "true" || true ? true : false;
     };
