@@ -12,7 +12,7 @@
   <script type="text/javascript">
     window.MAPLOOM_VERSION = {
         "version_string": "1.5.43",
-        "build_date": "2017-02-17"
+        "build_date": "2017-02-21"
     };
   </script>
 
@@ -191,20 +191,20 @@
               <div id="server-loading" class="loom-loading pull-right" spinner-radius="20" spinner-width="3" spinner-hidden="!serversLoading"></div>
             </div>
 
-            <div ng-show="!unifiedLayerDialog && configService.admin" class="panel-heading" data-toggle="collapse" data-parent="#pulldown-content"
-                 data-target="#layer-manager-panel">
+            <div ng-show="!unifiedLayerDialog" class="panel-heading" data-toggle="collapse" data-parent="#pulldown-content"
+                 data-target="#layer-managerpanel">
               <span translate="map_layers">Map Layers</span>
-              <div ng-show="addLayers" stop-event='click' ng-controller="modalToggle" ng-click="toggleModal('#add-layer-dialog')"
+              <div ng-show="addLayers && configService.admin" stop-event='click' ng-controller="modalToggle" ng-click="toggleModal('#add-layer-dialog')"
                    tooltip-placement="top" tooltip="{{'add_layer_btn' | translate}}" tooltip-append-to-body="true"
                    class="glyphicon glyphicon-plus-sign panel-header-button pull-right"></div>
 
               <div id="server-loading" class="loom-loading pull-right" spinner-radius="20" spinner-width="3" spinner-hidden="!serversLoading"></div>
             </div>
 
-            <div ng-show="unifiedLayerDialog && configService.admin" class="panel-heading" data-toggle="collapse" data-parent="#pulldown-content"
+            <div ng-show="unifiedLayerDialog" class="panel-heading" data-toggle="collapse" data-parent="#pulldown-content"
                  data-target="#layer-manager-panel">
               <span translate="map_layers">Map Layers</span>
-              <div ng-show="addLayers" stop-event='click' ng-controller="modalToggle" ng-click="toggleModal('#unified-layer-dialog')"
+              <div ng-show="addLayers && configService.admin" stop-event='click' ng-controller="modalToggle" ng-click="toggleModal('#unified-layer-dialog')"
                    tooltip-placement="top" tooltip="{{'add_layer_btn' | translate}}" tooltip-append-to-body="true"
                    class="glyphicon glyphicon-plus-sign panel-header-button pull-right"></div>
 
