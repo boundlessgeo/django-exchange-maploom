@@ -12,7 +12,7 @@
   <script type="text/javascript">
     window.MAPLOOM_VERSION = {
         "version_string": "1.5.46",
-        "build_date": "2017-02-24"
+        "build_date": "2017-02-28"
     };
   </script>
 
@@ -257,6 +257,28 @@
             </div>
             <div id="diff-panel" class="loom-diff-panel panel-collapse collapse pulldown-panel">Diffs go here.</div>
           </div>
+          <div class="panel" ng-show="mapService.commentsEnabled" ng-controller="LoomCommentModerationController">
+            <div class="panel-heading fixed-height-header" data-toggle="collapse" data-parent="#pulldown-content"
+                 data-target="#comment-moderation-panel">
+              <span class="ellipsis pulldown-menu-title">{{title}}</span>
+
+              <div stop-event='click' ng-click="commentModerationService.enableLatestMode()"
+                   ng-if="commentModerationService.editCommentPermission"
+                   class="glyphicon glyphicon-remove pull-right panel-header-button disabled"></div>
+
+              <div stop-event='click' ng-controller="modalToggle" ng-click="toggleModal('#commentSearchWindow')"
+                   tooltip-placement="top" tooltip="{{'comment_summary' | translate}}" tooltip-append-to-body="true"
+                   ng-if="commentModerationService.editCommentPermission"
+                   class="glyphicon glyphicon-list-alt pull-right panel-header-button"></div>
+
+              <div stop-event='click' ng-click="commentModerationService.addCommentMode()"
+                   tooltip-placement="top" tooltip="{{'add_comment' | translate}}" tooltip-append-to-body="true"
+                   class="glyphicon glyphicon-plus-sign pull-right panel-header-button"></div>
+            </div>
+            <div id="comment-moderation-panel" class="panel-collapse collapse pulldown-panel">
+              <div loom-comment-moderation-panel></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -309,6 +331,14 @@
   <div loom-history-diff id="historyDiff">
   </div>
 </div>
+<div loom-modal id="commentSearchWindow" modal-title="{{'select_date_range' | translate}}" close-button="false">
+  <div loom-comment-search id="commentSearch">
+  </div>
+</div>
+<div loom-modal id="commentAddWindow" modal-title="{{'add_comment_title' | translate}}" close-button="false">
+  <div loom-add-comment id="commentAdd">
+  </div>
+</div>
 <div loom-modal id="generate-notification-dialog" modal-title="{{'select_start_time' | translate}}" close-button="false">
   <div loom-generate-notification id="generateNotification">
   </div>
@@ -355,6 +385,8 @@
 </div>
 <div loom-feature-info-box id="info-box" ng-show="featureManagerService.getSelectedItem() && featureManagerService.getEnabled()"
      class="feature-info-box-popup">
+</div>
+<div loom-comment-info-box id="comment-view-box" class="feature-info-box-popup">
 </div>
 <div loom-modal id="saveMap" modal-title="{{ 'save_this_map' | translate}}">
     <div loom-save-map id="save-map">
