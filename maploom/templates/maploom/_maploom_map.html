@@ -1,7 +1,26 @@
 {% load staticfiles i18n %}{% verbatim %}
 <body class="maploom-body">
 
-<div id="map" class="map">
+<div id="header">
+  <div loom-map-icon></div>
+  <div class="header-text">
+      <div class="title ellipsis">{{ mapService.getTitle() }}</div>
+      <div class="description ellipsis">{{ mapService.getAbstract() }}</div>
+  </div>
+</div>
+<div id="sidebar" style="height: calc(100% - 90px);">
+  <div class="panel panel-default" style="margin-bottom: 15px;">
+    <div class="panel-body">
+      <img src="http://placehold.it/150x100"/>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-body feature-panel">
+        <div loom-story-feature></div>
+    </div>
+  </div>
+</div>
+<div id="map" class="map" style="height: calc(100% - 90px);">
   <div class="map-shadow"></div>
   <div id="pulldown" ng-controller="LoomPulldownController">
     <div id="pulldown-shadow">
@@ -154,6 +173,10 @@
     </div>
   </div>
   <div class="loom-timeline"></div>
+</div>
+
+<div id="footer" style="">
+  <span class="footer-text" contenteditable> {{mapService.story.footer}} </span>
 </div>
 <!--modal titles are in a lower case underscore separated format so that they can be translated-->
 <div loom-modal id="unified-layer-dialog" modal-title="add_layers">
