@@ -12,7 +12,7 @@
   <script type="text/javascript">
     window.MAPLOOM_VERSION = {
         "version_string": "1.5.60",
-        "build_date": "2017-06-07"
+        "build_date": "2017-06-08"
     };
   </script>
 
@@ -107,6 +107,7 @@
         csrfToken: "{{ csrf_token }}",
         tools: [{ptype: "gxp_getfeedfeatureinfo"}],
         registryEnabled: registryEnabled(),
+        admin: {% if user.is_authenticated %} "{{ user.is_superuser }}".toLowerCase() === "true" ? true : false  {% else %} undefined {% endif %},
         registryUrl: trimUrl("{{ REGISTRYURL }}"),
         searchEnabled: searchEnabled(),
         nominatimSearchEnabled: nominatimSearchEnabled(),
@@ -161,7 +162,7 @@
         <div class="panel-heading">
           <em id="map-name">
             <div class="map-title-text ellipsis">{{ mapService.getTitle() }}</div>
-            <i id="saveButton" class="glyphicon pull-right" data-target="#saveMap"
+            <i id="saveButton" class="glyphicon pull-right" data-target="#saveMap" ng-show="configService.admin"
                tooltip-placement="bottom" tooltip="{{'save_this_map' | translate}}" tooltip-append-to-body="true"
                ng-class="{'hide': !configService.username}" data-toggle="modal"></i>
             <i id="refreshButton" class="glyphicon pull-right" ng-click="refreshService.refreshLayers()"
@@ -195,7 +196,7 @@
           </div>
 
 
-            <div ng-show="true" class="panel">
+            <div ng-show="configService.admin" class="panel">
                 <div class="panel-heading" data-toggle="collapse" data-parent="#pulldown-content" data-target="#measure-panel-content">
                     <span translate="measure">Measure</span>
                 </div>
@@ -216,7 +217,7 @@
             <div ng-show="!unifiedLayerDialog" class="panel-heading" data-toggle="collapse" data-parent="#pulldown-content"
                  data-target="#layer-manager-panel">
               <span translate="map_layers">Map Layers</span>
-              <div ng-show="addLayers" stop-event='click' ng-controller="modalToggle" ng-click="toggleModal('#add-layer-dialog')"
+              <div ng-show="addLayers && configService.admin" stop-event='click' ng-controller="modalToggle" ng-click="toggleModal('#add-layer-dialog')"
                    tooltip-placement="top" tooltip="{{'add_layer_btn' | translate}}" tooltip-append-to-body="true"
                    class="glyphicon glyphicon-plus-sign panel-header-button pull-right"></div>
 
@@ -226,7 +227,7 @@
             <div ng-show="unifiedLayerDialog" class="panel-heading" data-toggle="collapse" data-parent="#pulldown-content"
                  data-target="#layer-manager-panel">
               <span translate="map_layers">Map Layers</span>
-              <div ng-show="addLayers" stop-event='click' ng-controller="modalToggle" ng-click="toggleModal('#unified-layer-dialog')"
+              <div ng-show="addLayers && configService.admin" stop-event='click' ng-controller="modalToggle" ng-click="toggleModal('#unified-layer-dialog')"
                    tooltip-placement="top" tooltip="{{'add_layer_btn' | translate}}" tooltip-append-to-body="true"
                    class="glyphicon glyphicon-plus-sign panel-header-button pull-right"></div>
 
@@ -238,7 +239,7 @@
             </div>
           </div>
 
-          <div class="panel" ng-show="syncPanel">
+          <div class="panel" ng-show="syncPanel && configService.admin" >
             <div class="panel-heading" data-toggle="collapse" data-parent="#pulldown-content"
                  data-target="#syncronization-panel">
               <span translate="synchronization">Synchronization</span>
