@@ -1,11 +1,12 @@
 import os
 from setuptools import setup, find_packages
+import maploom.version
 
 here = os.path.abspath(os.path.dirname(__file__))
 
 setup(
     name='django-exchange-maploom',
-    version='1.5.61',
+    version=maploom.version.get_version(),
     author='GeoNode Development Team - Prominent Edge, Terranodo, Boundless Spatial',
     author_email='exchange@boundlessgeo.com',
     url='https://github.com/boundlessgeo/django-exchange-maploom',
