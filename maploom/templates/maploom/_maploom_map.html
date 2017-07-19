@@ -1,5 +1,13 @@
 {% load staticfiles i18n %}{% verbatim %}
 <body class="maploom-body">
+<script>
+  if (window.TEMPLATE === 'chart') {
+    $('.maploom-body').css('height', 'calc(100% - 200px)')
+  }
+  $(window.document.body).bind('enable-chart', function(evt, enabled) {
+    $('.maploom-body').css('height', 'calc(100% - 200px)')
+  });
+</script>
 
 <div id="map" class="map">
   <div class="map-shadow"></div>
@@ -266,6 +274,10 @@
       </div>
     </div>
   </div>
+</div>
+<div id="chart-area" style="position: absolute; bottom: 0px; width: 100%; height: 200px;">
+  <div loom-chart></div>
+
 </div>
 
 {% endverbatim %}
