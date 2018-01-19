@@ -11,21 +11,21 @@
   <meta http-equiv="X-UA-COMPATIBLE" content="IE-Edge">
   <script type="text/javascript">
     window.MAPLOOM_VERSION = {
-        "version_string": "1.5.105",
-        "build_date": "2018-01-17"
+        "version_string": "1.5.106",
+        "build_date": "2018-01-19"
     };
   </script>
 
 <!-- compiled CSS -->
     
-        <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}maploom/assets/MapLoom-1.5.105.css"/>
+        <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}maploom/assets/MapLoom-1.5.106.css"/>
     
 
 
 
 <!-- compiled JavaScript -->
     
-        <script type="text/javascript" src="{{STATIC_URL}}maploom/assets/MapLoom-1.5.105.js"></script>
+        <script type="text/javascript" src="{{STATIC_URL}}maploom/assets/MapLoom-1.5.106.js"></script>
     
 
 
@@ -123,7 +123,9 @@
     for (var src_key in config.sources) {
         if (goog.isDefAndNotNull(config.sources[src_key].url)) {
             if (config.sources[src_key].ptype != 'gxp_arcrestsource') {
-                config.sources[src_key].url = trimUrl(config.sources[src_key].url);
+                if (config.sources[src_key].remote !== true) {
+                    config.sources[src_key].url = trimUrl(config.sources[src_key].url);
+                }
             }
         }
     }
