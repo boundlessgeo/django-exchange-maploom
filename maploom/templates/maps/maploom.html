@@ -11,21 +11,21 @@
   <meta http-equiv="X-UA-COMPATIBLE" content="IE-Edge">
   <script type="text/javascript">
     window.MAPLOOM_VERSION = {
-        "version_string": "1.5.60",
-        "build_date": "2017-07-11"
+        "version_string": "1.5.134",
+        "build_date": "2018-06-14"
     };
   </script>
 
 <!-- compiled CSS -->
     
-        <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}maploom/assets/MapLoom-1.5.60.css"/>
+        <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}maploom/assets/MapLoom-1.5.134.css"/>
     
 
 
 
 <!-- compiled JavaScript -->
     
-        <script type="text/javascript" src="{{STATIC_URL}}maploom/assets/MapLoom-1.5.60.js"></script>
+        <script type="text/javascript" src="{{STATIC_URL}}maploom/assets/MapLoom-1.5.134.js"></script>
     
 
 
@@ -40,6 +40,11 @@
     }
     var registryEnabled = function(){
       return "{{ REGISTRY }}".toLowerCase() === "true" || true ? true : false;
+    };
+    var stylingEnabled = function(){
+      var perm = "{{ perms.layers.change_layer_style }}".toLowerCase() === "true" ? true : false;
+      var enabled = "{{ LOOM_STYLING_ENABLED }}".toLowerCase() === "true" ? true : false;
+      return (perm && enabled);
     };
     var unifiedDialogEnabled = function(){
         return "{{ UNIFIED_LAYER_DIALOG }}".toLowerCase() === "true" || true ? true: false;
@@ -108,6 +113,7 @@
         tools: [{ptype: "gxp_getfeedfeatureinfo"}],
         registryEnabled: registryEnabled(),
         admin: {% if user.is_authenticated %} "{{ user.is_superuser }}".toLowerCase() === "true" ? true : false  {% else %} undefined {% endif %},
+        stylingEnabled: stylingEnabled(),
         registryUrl: trimUrl("{{ REGISTRYURL }}"),
         searchEnabled: searchEnabled(),
         nominatimSearchEnabled: nominatimSearchEnabled(),
@@ -120,7 +126,15 @@
     for (var src_key in config.sources) {
         if (goog.isDefAndNotNull(config.sources[src_key].url)) {
             if (config.sources[src_key].ptype != 'gxp_arcrestsource') {
-                config.sources[src_key].url = trimUrl(config.sources[src_key].url);
+                if (config.sources[src_key].remote !== true) {
+                    config.sources[src_key].url = trimUrl(config.sources[src_key].url);
+                }
+            } else {
+                // this is an arcgis rest source...
+                var url = config.sources[src_key].url;
+                if (url.substring(url.length - 1) !== '/') {
+                    config.sources[src_key].url = url + '/';
+                }
             }
         }
     }
